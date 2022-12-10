@@ -1,0 +1,25 @@
+{
+  "name": "dashboard-api",
+  "version": "0.0.1",
+  "description": "A simple learning project in PurpleSchool",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/darkbearru/dashboard-api.git"
+  },
+  "keywords": [
+    "api",
+    "dashboard",
+    "typescript",
+    "nodejs"
+  ],
+  "author": "Alexey Abramenko (darkbear.ru)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/darkbearru/dashboard-api/issues"
+  },
+  "homepage": "https://github.com/darkbearru/dashboard-api#readme"
+}
