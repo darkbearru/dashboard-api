@@ -4,7 +4,7 @@ import {IControllerRoute} from "./route.interface";
 
 export abstract class BaseController {
     private readonly _router: Router;
-    constructor(private logger: LoggerService) {
+    constructor(protected logger: LoggerService) {
         this._router = Router();
     }
 
@@ -18,7 +18,7 @@ export abstract class BaseController {
 
     public send<T> (res: Response, code:number, message: T): Response {
         res.type('application/json');
-        return res.status(code).json(message);
+        return res.status(code).send(message);
     }
     public ok<T> (res: Response, message: T): Response {
         return this.send<T>(res, 200, message);
