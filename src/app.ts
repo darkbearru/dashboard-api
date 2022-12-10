@@ -3,13 +3,14 @@ import {Server} from "node:http";
 import {LoggerService} from "./logger/logger.service";
 import {UsersController} from "./users/users.controller";
 import {ExceptionFilter} from "./errors/exception.filter";
+import {ILogger} from "./logger/loger.interface";
 
 export class App {
     private app: Express;
     private port: number = 8900;
     private server: Server;
 
-    constructor(private logger: LoggerService, private usersController: UsersController, private exceptionFilter: ExceptionFilter) {
+    constructor(private logger: ILogger, private usersController: UsersController, private exceptionFilter: ExceptionFilter) {
         this.app = express();
     }
 
