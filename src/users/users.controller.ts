@@ -1,6 +1,7 @@
 import {BaseController} from "../common/base.controller";
 import {NextFunction, Request, Response} from "express";
 import {LoggerService} from "../logger/logger.service";
+import {HttpError} from "../errors/http-error";
 
 export class UsersController extends BaseController {
     constructor(logger: LoggerService) {
@@ -19,7 +20,7 @@ export class UsersController extends BaseController {
 
     private login(req: Request, res: Response, next: NextFunction) {
         this.logger.log('Login');
-        this.ok(res, 'Login');
-        next();
+        // this.ok(res, 'Login');
+        next(new HttpError(401, 'Ошибка авторизации', 'Login'));
     }
 }
