@@ -5,10 +5,11 @@ import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
 import {ILogger} from "../logger/loger.interface";
 import 'reflect-metadata'
+import {IUsersController} from "./users.controller.interface";
 
 
 @injectable()
-export class UsersController extends BaseController {
+export class UsersController extends BaseController implements IUsersController{
     constructor(@inject(TYPES.ILogger) protected logger: ILogger) {
         super(logger);
         this.bindRoutes([
@@ -17,13 +18,13 @@ export class UsersController extends BaseController {
         ])
     }
 
-    private register(req: Request, res: Response, next: NextFunction) {
+    register(req: Request, res: Response, next: NextFunction) {
         this.logger.log('Register');
         this.ok(res, 'Register');
         next();
     }
 
-    private login(req: Request, res: Response, next: NextFunction) {
+    login(req: Request, res: Response, next: NextFunction) {
         this.logger.log('Login');
         // this.ok(res, 'Login');
         next(new HttpError(401, 'Ошибка авторизации', 'Login'));
