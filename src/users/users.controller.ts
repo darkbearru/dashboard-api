@@ -10,12 +10,16 @@ import { UserRegisterDto } from './dto/user-register.dto';
 import { IUsersService } from './users.service.interface';
 import 'reflect-metadata';
 import { ValidateMiddleware } from '../common/validate.middleware';
+import { sign } from 'jsonwebtoken';
+import { IConfigService } from '../config/config.service.interface';
+import { GuardMiddleware } from '../common/guard.middleware';
 
 @injectable()
 export class UsersController extends BaseController implements IUsersController {
 	constructor(
 		@inject(TYPES.ILogger) protected logger: ILogger,
 		@inject(TYPES.IUsersService) private usersService: IUsersService,
+		@inject(TYPES.IConfigService) private configService: IConfigService,
 	) {
 		super(logger);
 		this.bindRoutes([
@@ -30,6 +34,12 @@ export class UsersController extends BaseController implements IUsersController 
 				method: 'post',
 				func: this.register,
 				middlewares: [new ValidateMiddleware(UserRegisterDto)],
+			},
+			{
+				path: '/info',
+				method: 'get',
+				func: this.info,
+				middlewares: [new GuardMiddleware()],
 			},
 		]);
 	}
@@ -59,7 +69,38 @@ export class UsersController extends BaseController implements IUsersController 
 		if (!result) {
 			return next(new HttpError(401, 'Ошибка авторизации', 'Login'));
 		}
-		this.ok(res, { email: result.email, id: result.id });
+		const jwt = await this.signJWT(result.email, this.configService.get('JWT_SECRET'));
+		this.ok(res, { email: result.email, id: result.id, jwt });
 		return next();
+	}
+
+	async info({ user }: Request, res: Response, next: NextFunction): Promise<void> {
+		// const jwt = await this.signJWT(result.email, this.configService.get('JWT_SECRET'));
+		const currentUser = await this.usersService.getUserInfo(user);
+		if (currentUser) {
+			this.ok(res, { name: currentUser.name, email: currentUser.email, id: currentUser.id });
+		} else {
+			this.send(res, 403, 'Пользователь не найден');
+		}
+		return next();
+	}
+
+	private signJWT(email: string, secret: string): Promise<string> {
+		return new Promise<string>((resolve, reject) => {
+			sign(
+				{
+					email,
+					iat: Math.floor(Date.now() / 1000),
+				},
+				secret,
+				{
+					algorithm: 'HS256',
+				},
+				(err, token) => {
+					if (err) reject(err);
+					resolve(token as string);
+				},
+			);
+		});
 	}
 }

@@ -36,4 +36,8 @@ export class UsersService implements IUsersService {
 
 		return existedUser;
 	}
+
+	public async getUserInfo(email: string): Promise<UserModel | null> {
+		return await this.usersRepository.find(email);
+	}
 }
