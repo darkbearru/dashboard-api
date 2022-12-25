@@ -7,6 +7,7 @@ export interface IUsersService {
 	create: (dto: UserRegisterDto) => Promise<UserModel | null>;
 
 	validateUser: (dto: UserLoginDto) => Promise<UserModel | null>;
+	getUserInfo: (email: string) => Promise<UserModel | null>;
 
 	// register(req: Request, res: Response, next: NextFunction): void;
 }
